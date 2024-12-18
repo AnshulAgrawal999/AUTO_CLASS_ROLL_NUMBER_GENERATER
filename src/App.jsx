@@ -1,32 +1,29 @@
-
 import React, { useState } from "react";
-
 import {
   Box,
   Button,
   Input,
   Text,
   VStack,
-  HStack,
   FormControl,
   FormLabel,
   useToast,
+  HStack,
 } from "@chakra-ui/react";
-
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 function App() {
-  const [startingNumber, setStartingNumber] = useState(1);
   const [count, setCount] = useState(0);
   const [className, setClassName] = useState(""); // For Class
   const [section, setSection] = useState(""); // For Section
   const [separator, setSeparator] = useState("-"); // Default Separator
   const [rollNumbers, setRollNumbers] = useState([]);
+  const [startingText, setStartingText] = useState(""); // For Starting Text
   const toast = useToast();
   const queryClient = useQueryClient();
 
   const generateRollNumbers = useMutation(
-    ({ startingNumber, count, className, section, separator }) => {
+    ({ count, className, section, separator }) => {
       if (count <= 0) {
         throw new Error("Please enter a count greater than 0.");
       }
@@ -35,8 +32,8 @@ function App() {
       }
 
       const newRollNumbers = [];
-      for (let i = 0; i < count; i++) {
-        const formattedRollNumber = `${className}${separator}${section}${separator}${startingNumber + i}`;
+      for (let i = 1; i <= count; i++) {
+        const formattedRollNumber = `${className}${separator}${section}${separator}${i}`;
         newRollNumbers.push(formattedRollNumber);
       }
       return newRollNumbers;
@@ -71,12 +68,12 @@ function App() {
   );
 
   const resetHandler = () => {
-    setStartingNumber(1);
     setCount(0);
     setClassName("");
     setSection("");
     setSeparator("-");
     setRollNumbers([]);
+    setStartingText(""); // Reset Starting Text
     toast({
       title: "Reset Successful",
       description: "Roll numbers have been cleared.",
@@ -92,14 +89,14 @@ function App() {
         Auto Class Roll Number Generator
       </Text>
       <VStack spacing={4} align="stretch">
-
+        {/* Starting Text Input */}
         <FormControl>
-          <FormLabel>Starting Number</FormLabel>
+          <FormLabel>Starting Text (eg- School Name, session , year )</FormLabel>
           <Input
-            type="number"
-            placeholder="Starting Number"
-            value={startingNumber}
-            onChange={(e) => setStartingNumber(Number(e.target.value))}
+            type="text"
+            placeholder="Enter Starting Text"
+            value={startingText}
+            onChange={(e) => setStartingText(e.target.value)}
           />
         </FormControl>
 
@@ -121,7 +118,7 @@ function App() {
             onChange={(e) => setSection(e.target.value)}
           />
         </FormControl>
-       
+
         <FormControl>
           <FormLabel>Count</FormLabel>
           <Input
@@ -140,7 +137,7 @@ function App() {
             onChange={(e) => setSeparator(e.target.value || "-")}
           />
         </FormControl>
-        <Button colorScheme="teal" onClick={() => generateRollNumbers.mutate({ startingNumber, count, className, section, separator })}>
+        <Button colorScheme="teal" onClick={() => generateRollNumbers.mutate({ count, className, section, separator })}>
           Generate Roll Numbers
         </Button>
         <Button colorScheme="red" onClick={resetHandler}>
@@ -158,5 +155,4 @@ function App() {
   );
 }
 
-
-export default App
+export default App;
