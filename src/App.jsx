@@ -21,6 +21,10 @@ function App() {
 
   const generateRollNumbers = useMutation(
     ({ count, inputGroups, separator }) => {
+
+      if (count === '' ) {
+        throw new Error("Please enter a count value");
+      }
       // Validation checks
       if (count <= 0) {
         throw new Error("Please enter a count greater than 0.");
@@ -86,8 +90,8 @@ function App() {
   };
 
   const resetHandler = () => {
-    setCount(0);
-    setSeparator("-");
+    setCount('')  ;
+    setSeparator("");
     setInputGroups([{ className: "" }]); // Reset to default group
     setRollNumbers([]);
     toast({
@@ -134,10 +138,10 @@ function App() {
         {inputGroups.map((group, index) => (
           <Box key={index} borderWidth="1px" borderRadius="md" p={3}>
             <FormControl mb={2}>
-              <FormLabel> Field </FormLabel>
+              <FormLabel> Field Name </FormLabel>
               <Input
                 type="text"
-                placeholder="Enter Class"
+                placeholder="Enter Field Name"
                 value={group.className}
                 onChange={(e) => updateInputGroup(index, e.target.value)}
               />
